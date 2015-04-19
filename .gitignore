@@ -89,6 +89,6 @@ install_manifest.txt
 jsoncpp/
 mongo-cxx-driver/
 uri/
-
+googletest/
 
 

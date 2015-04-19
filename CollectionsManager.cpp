@@ -22,7 +22,7 @@ void initializeMongoDb() {
 Manager::Manager(const mongo::ConnectionString& cs) {
     initializeMongoDb();
     string errMsg;
-    connection = std::move(unique_ptr<DBClientBase>(cs.connect(errMsg)));
+    connection.reset(cs.connect(errMsg));
     if(!connection) {
         throw mongo_error(errMsg);
     }
