@@ -3,6 +3,7 @@
 //
 
 #include "CollectionsManager.h"
+#include "CollectionItem.h"
 
 using namespace collections;
 using namespace mongo;
@@ -26,4 +27,27 @@ Manager::Manager(const mongo::ConnectionString& cs) {
     if(!connection) {
         throw mongo_error(errMsg);
     }
+    writeConcern.reset(new WriteConcern());
+    nameSpace = "speedray.collections";
+}
+
+ActionStatus Manager::addCollectionItem(CollectionItem& item) {
+    ActionStatus status(ErrorCodes::Error::OK,"Success");
+    try {
+        connection->insert(nameSpace,item.dbObject(),0,writeConcern.get());
+    } catch(DBException& e) {
+        ActionStatus status(ErrorCodes::fromInt(e.getCode()),e.toString());
+        return status;
+    }
+    return status;
+}
+
+ActionStatus Manager::updateCollectionItem(CollectionItem& item) {
+    ActionStatus status(ErrorCodes::Error::OK,"Success");
+    return status;
+}
+
+ActionStatus Manager::deleteCollectionItem(CollectionItem& item) {
+    ActionStatus status(ErrorCodes::Error::OK,"Success");
+    return status;
 }

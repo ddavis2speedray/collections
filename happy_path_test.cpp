@@ -4,16 +4,19 @@
 
 #include <gtest/gtest.h>
 #include "CollectionsManager.h"
+#include "CollectionItem.h"
 
 using namespace std;
 using namespace mongo;
 using namespace boost;
 using namespace collections;
 
-TEST(HappyPathTest,Connect) {
+TEST(HappyPathTest,AddFolderCollection) {
     string uri("mongodb://192.168.99.100");
     string errMsg;
     ConnectionString cs = ConnectionString::parse(uri, errMsg);
     EXPECT_TRUE(cs.isValid());
     Manager manager(cs);
+    CollectionItem item("http://speedray.org/collections/schemas/folder");
+    manager.addCollectionItem(item);
 }

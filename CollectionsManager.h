@@ -8,12 +8,28 @@
 #include <mongo/client/dbclient.h>
 
 namespace collections {
+    class CollectionItem;
     class Manager {
     public:
         Manager(const mongo::ConnectionString& cs);
         virtual ~Manager() _NOEXCEPT { };
+        // Collection item actions add,update,delete
+        ActionStatus addCollectionItem(CollectionItem& item);
+        ActionStatus updateCollectionItem(CollectionItem& item);
+        ActionStatus deleteCollectionItem(CollectionItem& item);
     private:
         std::unique_ptr<mongo::DBClientBase> connection;
+        std::unique_ptr<mongo::WriteConcern> writeConcern;
+        std::string nameSpace;
+    };
+
+    class ActionStatus {
+    public:
+        ActionStatus(mongo::ErrorCodes::Error error, std::string msg):errorCode(error),errorMessage(msg) {};
+        virtual ~ActionStatus() {};
+    private:
+        mongo::ErrorCodes::Error errorCode;
+        std::string errorMessage;
     };
 
     class mongo_error:public std::exception {
