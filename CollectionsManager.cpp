@@ -31,10 +31,14 @@ Manager::Manager(const mongo::ConnectionString& cs) {
     nameSpace = "speedray.collections";
 }
 
+Manager::Manager(mongo::DBClientBase* c) {
+    connection.reset(c);
+}
+
 ActionStatus Manager::addCollectionItem(CollectionItem& item) {
     ActionStatus status(ErrorCodes::Error::OK,"Success");
     try {
-        connection->insert(nameSpace,item.dbObject(),0,writeConcern.get());
+        connection->insert(nameSpace,item,0,writeConcern.get());
     } catch(DBException& e) {
         ActionStatus status(ErrorCodes::fromInt(e.getCode()),e.toString());
         return status;

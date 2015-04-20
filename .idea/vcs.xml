@@ -2,6 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/googletest" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/jsoncpp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mongo-cxx-driver" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uri" vcs="Git" />
   </component>
 </project>

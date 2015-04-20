@@ -8,10 +8,14 @@
 #include <mongo/client/dbclient.h>
 
 namespace collections {
+
     class CollectionItem;
+    class ActionStatus;
+
     class Manager {
     public:
         Manager(const mongo::ConnectionString& cs);
+        Manager(mongo::DBClientBase* c);
         virtual ~Manager() _NOEXCEPT { };
         // Collection item actions add,update,delete
         ActionStatus addCollectionItem(CollectionItem& item);
@@ -27,6 +31,8 @@ namespace collections {
     public:
         ActionStatus(mongo::ErrorCodes::Error error, std::string msg):errorCode(error),errorMessage(msg) {};
         virtual ~ActionStatus() {};
+        const auto error() { return errorCode; }
+        const auto msg() { return errorMessage; }
     private:
         mongo::ErrorCodes::Error errorCode;
         std::string errorMessage;

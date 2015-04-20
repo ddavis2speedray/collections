@@ -5,26 +5,24 @@
 #ifndef COLLECTIONS_COLLECTIONITEM_H
 #define COLLECTIONS_COLLECTIONITEM_H
 
-#include <mongo/bson/bsonobj.h>
+#include <mongo/bson/bson.h>
 #include <network/uri.hpp>
 
 namespace collections {
-    class CollectionItem {
+    class CollectionItem:public mongo::BSONObj {
     public:
-        CollectionItem(std::string uri);
-        explicit CollectionItem(const char *bsonData):obj(bsonData) { }
-        explicit CollectionItem(mongo::SharedBuffer ownedBuffer):obj(ownedBuffer) { }
-        CollectionItem(CollectionItem&& other):obj(other.obj) { }
+        CollectionItem() {};
+        CollectionItem(std::string jsonString);
+        CollectionItem(mongo::BSONObj o);
+        explicit CollectionItem(const char *bsonData):mongo::BSONObj(bsonData) { }
+        explicit CollectionItem(mongo::SharedBuffer ownedBuffer):mongo::BSONObj(ownedBuffer) { }
+        CollectionItem(CollectionItem&& other):mongo::BSONObj(other) { }
         CollectionItem(const CollectionItem&)=default;
-
-        mongo::BSONObj& dbObject() { return obj; }
-    private:
-        mongo::BSONObj obj;
     };
 
     class network_exception: public std::exception {
     public:
-        virtual network_exception(std::string msg):msgField(msg) {};
+        network_exception(std::string msg):msgField(msg) {};
         virtual ~network_exception() {};
     private:
         std::string msgField;
