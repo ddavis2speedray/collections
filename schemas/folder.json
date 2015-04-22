@@ -1,0 +1,5 @@
+{
+  "type":"object",
+  "id": "http://speedray.org/collections/folder",
+  "$ref":"item.json"
+}

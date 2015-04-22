@@ -3,55 +3,57 @@
 //
 
 #include "CollectionsManager.h"
-#include "CollectionItem.h"
 
-using namespace collections;
 using namespace mongo;
 using namespace boost;
 using namespace std;
 
-void initializeMongoDb() {
-    client::Options options;
-    options.setCallShutdownAtExit(true);
-    static Status status = client::initialize(options);
-    if(!status.isOK()) {
-        cerr << "failed to initialize with error: " << status.codeString() << endl;
-        throw mongo_error(status.reason());
+namespace collections {
+
+    std::vector<Configuration> createDefaultConfiguration() {
+        std::vector<Configuration> confs(_MAX_ITEM_IDS);
+        confs.push_back(Configuration(UNDEFINED,DEFAULT_DB,"default"));
+        confs.push_back(Configuration(COLLECTION,DEFAULT_DB,DEFAULT_COLLECTION_COLLECTION));
+        confs.push_back(Configuration(SCHEMA,DEFAULT_DB,DEFAULT_SCHEMA_COLLECTION));
     }
-}
+    static std::vector<Configuration> configurations = createDefaultConfiguration();
 
-Manager::Manager(const mongo::ConnectionString& cs) {
-    initializeMongoDb();
-    string errMsg;
-    connection.reset(cs.connect(errMsg));
-    if(!connection) {
-        throw mongo_error(errMsg);
-    }
-    writeConcern.reset(new WriteConcern());
-    nameSpace = "speedray.collections";
-}
-
-Manager::Manager(mongo::DBClientBase* c) {
-    connection.reset(c);
-}
-
-ActionStatus Manager::addCollectionItem(CollectionItem& item) {
-    ActionStatus status(ErrorCodes::Error::OK,"Success");
-    try {
-        connection->insert(nameSpace,item,0,writeConcern.get());
-    } catch(DBException& e) {
-        ActionStatus status(ErrorCodes::fromInt(e.getCode()),e.toString());
+    const Status& initializeMongoDb() {
+        client::Options options;
+        options.setCallShutdownAtExit(true);
+        static Status status = client::initialize(options);
         return status;
     }
-    return status;
-}
 
-ActionStatus Manager::updateCollectionItem(CollectionItem& item) {
-    ActionStatus status(ErrorCodes::Error::OK,"Success");
-    return status;
-}
+    Manager::Manager(const mongo::ConnectionString& cs) _NOEXCEPT {
+        const Status& status = initializeMongoDb();
+        string errMsg;
+        conn.reset(cs.connect(errMsg));
+        wc.reset(new WriteConcern());
+    }
 
-ActionStatus Manager::deleteCollectionItem(CollectionItem& item) {
-    ActionStatus status(ErrorCodes::Error::OK,"Success");
-    return status;
+    Manager::Manager(mongo::DBClientBase* c) _NOEXCEPT {
+        conn.reset(c);
+    }
+
+    ActionStatus Manager::add(Item& item) _NOEXCEPT {
+        ActionStatus status(ErrorCodes::Error::OK,"Success");
+        try {
+            conn->insert(configurations[item.typeId()].nameSpace(),item,0,wc.get());
+        } catch(DBException& e) {
+            ActionStatus status(ErrorCodes::fromInt(e.getCode()),e.toString());
+            return status;
+        }
+        return status;
+    }
+
+    ActionStatus Manager::update(Item& item) _NOEXCEPT {
+        ActionStatus status(ErrorCodes::Error::OK,"Success");
+        return status;
+    }
+
+    ActionStatus Manager::remove(Item& item) _NOEXCEPT {
+        ActionStatus status(ErrorCodes::Error::OK,"Success");
+        return status;
+    }
 }

@@ -1,0 +1,34 @@
+{
+  "id": "http://speedray.org/collections/item",
+  "type": "object",
+  "properties": {
+    "parentRef": {
+      "type": "object"
+    },
+     "name": {
+      "type": "string",
+      "required": true
+    },
+    "title" : {
+      "$ref": "translatableString.json",
+      "required": true
+    },
+    "description" : {
+      "$ref": "translatableString.json"
+    },
+    "version": {
+      "type": "integer"
+    },
+    "versionRef": {
+      "type": "object",
+      "required": true
+    },
+    "status": {
+      "type": "integer",
+      "required": true
+    },
+    "statusRef": {
+      "type": "object"
+  }
+  }
+}

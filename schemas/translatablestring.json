@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "id": "http://speedray.org/collections/translatablestring",
+  "properties": {
+    "default": {
+      "type": "string"
+    },
+    "translations": {
+      "type": "object"
+    }
+  }
+}
