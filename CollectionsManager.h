@@ -33,6 +33,9 @@ namespace collections {
         std::string ns;
     };
 
+
+    extern std::vector<Configuration> configurations;
+
     class Item:public mongo::BSONObj {
     public:
         Item(mongo::BSONObj o) _NOEXCEPT:BSONObj(o),type(UNDEFINED) {};
@@ -61,11 +64,13 @@ namespace collections {
         const mongo::DBClientBase& connection()  _NOEXCEPT { return *conn; }
         const mongo::WriteConcern& writeConcern()  _NOEXCEPT { return *wc; }
         // Connection status, etc.
-        const bool isValid() _NOEXCEPT { return conn?!conn->isFailed():false; }
+        const bool isValid() _NOEXCEPT { return (bool)conn?!conn->isFailed():false; }
         // Collection item actions add,update,delete
         ActionStatus add(Item& item) _NOEXCEPT;
         ActionStatus update(Item& item) _NOEXCEPT;
         ActionStatus remove(Item& item) _NOEXCEPT;
+        // configuration and system prep
+        ActionStatus loadSystemSchemas(const std::string schemaDir);
     private:
         std::unique_ptr<mongo::DBClientBase> conn;
         std::unique_ptr<mongo::WriteConcern> wc;
@@ -73,13 +78,17 @@ namespace collections {
 
     class ActionStatus {
     public:
-        ActionStatus(mongo::ErrorCodes::Error error, const std::string &&msg) _NOEXCEPT :errorCode(error),errorMessage(msg) {};
+        ActionStatus(mongo::ErrorCodes::Error error, std::string msg) _NOEXCEPT :errorCode(error),errorMessage(msg) {};
+        ActionStatus(const ActionStatus& s) _NOEXCEPT :errorCode(s.errorCode),errorMessage(s.errorMessage) {};
         virtual ~ActionStatus() _NOEXCEPT {};
         const auto error() _NOEXCEPT { return errorCode; }
         const auto msg() _NOEXCEPT { return errorMessage; }
+        void error(mongo::ErrorCodes::Error error) _NOEXCEPT { errorCode = error; }
+        void msg(std::string msg) _NOEXCEPT { errorMessage = msg; }
+        void reset(mongo::ErrorCodes::Error error,std::string msg) { errorCode = error; errorMessage = msg; }
     private:
-        const mongo::ErrorCodes::Error errorCode;
-        const std::string& errorMessage;
+        mongo::ErrorCodes::Error errorCode;
+        std::string errorMessage;
     };
 }
 #endif //COLLECTIONS_COLLECTIONSMANAGER_H
