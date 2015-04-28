@@ -70,6 +70,7 @@ namespace collections {
         ActionStatus update(Item& item) _NOEXCEPT;
         ActionStatus remove(Item& item) _NOEXCEPT;
         // configuration and system prep
+        ActionStatus addSchema(std::ifstream&);
         ActionStatus loadSystemSchemas(const std::string schemaDir);
     private:
         std::unique_ptr<mongo::DBClientBase> conn;
@@ -78,7 +79,7 @@ namespace collections {
 
     class ActionStatus {
     public:
-        ActionStatus(mongo::ErrorCodes::Error error, std::string msg) _NOEXCEPT :errorCode(error),errorMessage(msg) {};
+        ActionStatus(mongo::ErrorCodes::Error error = mongo::ErrorCodes::Error::OK , std::string msg = "SUCCESS") _NOEXCEPT :errorCode(error),errorMessage(msg) {};
         ActionStatus(const ActionStatus& s) _NOEXCEPT :errorCode(s.errorCode),errorMessage(s.errorMessage) {};
         virtual ~ActionStatus() _NOEXCEPT {};
         const auto error() _NOEXCEPT { return errorCode; }

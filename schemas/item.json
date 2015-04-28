@@ -10,11 +10,11 @@
       "required": true
     },
     "title" : {
-      "$ref": "translatableString.json",
+      "ref": "translatableString.json",
       "required": true
     },
     "description" : {
-      "$ref": "translatableString.json"
+      "ref": "translatableString.json"
     },
     "version": {
       "type": "integer"
