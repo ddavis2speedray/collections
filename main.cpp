@@ -21,10 +21,6 @@ int main() {
     } catch( const DBException &e ) {
         cerr << "caught " << e.what() << endl;
         return -1;
-    } catch( const mongo_error &e) {
-        cerr << "caught " << e.what() << endl;
-        cerr << "reason " << e.msg() << endl;
-        return -1;
     }
     return 0;
 }

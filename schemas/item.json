@@ -1,5 +1,6 @@
 {
   "id": "http://speedray.org/collections/item",
+  "$schema":"http://json-schema.org/schema#",
   "type": "object",
   "properties": {
     "parentRef": {
@@ -10,11 +11,11 @@
       "required": true
     },
     "title" : {
-      "ref": "translatableString.json",
+      "id": "translatablestring",
       "required": true
     },
     "description" : {
-      "ref": "translatableString.json"
+      "id": "translatablestring"
     },
     "version": {
       "type": "integer"
@@ -29,6 +30,6 @@
     },
     "statusRef": {
       "type": "object"
-  }
+    }
   }
 }

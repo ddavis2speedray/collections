@@ -4,7 +4,6 @@
 
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include <streambuf>
 #include "CollectionsManager.h"
 
 using namespace mongo;
