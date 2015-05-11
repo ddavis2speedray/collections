@@ -34,8 +34,6 @@ namespace collections {
     };
 
 
-    extern std::vector<Configuration> configurations;
-
     class Item:public mongo::BSONObj {
     public:
         Item(mongo::BSONObj o) _NOEXCEPT:BSONObj(o),type(UNDEFINED) {};
@@ -66,30 +64,15 @@ namespace collections {
         // Connection status, etc.
         const bool isValid() _NOEXCEPT { return (bool)conn?!conn->isFailed():false; }
         // Collection item actions add,update,delete
-        ActionStatus add(Item& item) _NOEXCEPT;
-        ActionStatus update(Item& item) _NOEXCEPT;
-        ActionStatus remove(Item& item) _NOEXCEPT;
+        mongo::Status add(Item &item) _NOEXCEPT;
+        mongo::Status update(Item &item) _NOEXCEPT;
+        mongo::Status remove(Item &item) _NOEXCEPT;
         // configuration and system prep
-        ActionStatus addSchema(std::ifstream&);
-        ActionStatus loadSystemSchemas(const std::string schemaDir);
+        mongo::Status addSchema(std::ifstream&);
+        mongo::Status loadSystemSchemas(const std::string schemaDir);
     private:
         std::unique_ptr<mongo::DBClientBase> conn;
         std::unique_ptr<mongo::WriteConcern> wc;
-    };
-
-    class ActionStatus {
-    public:
-        ActionStatus(mongo::ErrorCodes::Error error = mongo::ErrorCodes::Error::OK , std::string msg = "SUCCESS") _NOEXCEPT :errorCode(error),errorMessage(msg) {};
-        ActionStatus(const ActionStatus& s) _NOEXCEPT :errorCode(s.errorCode),errorMessage(s.errorMessage) {};
-        virtual ~ActionStatus() _NOEXCEPT {};
-        const auto error() _NOEXCEPT { return errorCode; }
-        const auto msg() _NOEXCEPT { return errorMessage; }
-        void error(mongo::ErrorCodes::Error error) _NOEXCEPT { errorCode = error; }
-        void msg(std::string msg) _NOEXCEPT { errorMessage = msg; }
-        void reset(mongo::ErrorCodes::Error error,std::string msg) { errorCode = error; errorMessage = msg; }
-    private:
-        mongo::ErrorCodes::Error errorCode;
-        std::string errorMessage;
     };
 }
 #endif //COLLECTIONS_COLLECTIONSMANAGER_H
